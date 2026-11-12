@@ -1,6 +1,6 @@
-"""Live evaluation: scripted conversations through the real agent (Gemini + tools) vs a plain one-shot Gemini answer.
+"""Live evaluation: scripted conversations through the real agent (LLM + tools) vs a plain one-shot answer from the same model.
 
-Needs GEMINI_API_KEY.   python eval/run_llm_eval.py [--md ../docs/EVAL_LLM.md]
+Needs a key for the provider set in backend/.env (GEMINI_API_KEY or GROQ_API_KEY).   python eval/run_llm_eval.py [--md ../docs/EVAL_LLM.md]
 
 For each case we record: tools the agent called, automatic checks on its reply, the ground truth computed by the tools,
 and the one-shot (no tools, no dataset) answer to the same question, so grounded vs ungrounded behaviour can be compared.

@@ -47,9 +47,9 @@ dozen turns. The backend retries automatically and shows a clear error if the qu
 
 ```bash
 cd backend
-python -m pytest -q                         # 19 tests: normaliser + 11 deterministic evaluation cases
+python -m pytest -q                         # 31 tests: normaliser (8) + router (12) + 11 deterministic evaluation cases
 python eval/run_eval.py --md ../docs/EVAL_RESULTS.md
-python eval/run_llm_eval.py                 # live: agent vs one-shot Gemini (needs the key) -> docs/EVAL_LLM.md
+python eval/run_llm_eval.py                 # live: agent vs one-shot LLM (needs a key) -> docs/EVAL_LLM.md
 ```
 
 ## What each task does
@@ -67,12 +67,25 @@ Try: *"Find a penne pasta recipe."* → *"I cannot have dairy."* · *"How many r
 
 ```
 backend/app/        normalize.py (parsing, synonyms, allergen rules) · store.py (SQLite, filters, hybrid search)
-                    stats.py · match.py · substitute.py · tools.py (LLM tools) · agent.py · main.py (FastAPI)
+                    stats.py · match.py · substitute.py · tools.py (LLM tools) · router.py (forces dataset_stats
+                    for statistical questions) · session.py (per-conversation state) · llm.py (provider clients)
+                    agent.py (Gemini loop) · agent_openai.py (OpenAI-compatible loop) · main.py (FastAPI)
 backend/scripts/    setup_data.py, build_db.py, build_embeddings.py, ...
 backend/eval/       cases.py (deterministic eval) · run_eval.py · run_llm_eval.py (live, vs one-shot LLM)
 backend/tests/      pytest wrappers
 frontend/           Next.js chat UI
-docs/               DESIGN.md (decisions, limitations, AI disclosure) · EVAL_RESULTS.md
+docs/               DESIGN.md (decisions, limitations, AI disclosure) · EVAL_RESULTS.md (deterministic suite)
+                    EVAL_LLM.md / .json (live agent vs one-shot, Groq) · EVAL_LLM_gemini_L2.md (L2 re-run on Gemini)
 ```
+
+## Evaluation summary
+
+| Suite | Cases | Result |
+|---|---|---|
+| Deterministic ([`docs/EVAL_RESULTS.md`](docs/EVAL_RESULTS.md)) | 11 (multi-turn search, aggregate stats, step ranking, missing attributes, matching + follow-up, no-match, quantities, weak-evidence substitution, cream→dairy-free, refused substitution, normalisation) | 11 / 11 pass |
+| Live LLM vs one-shot ([`docs/EVAL_LLM.md`](docs/EVAL_LLM.md)) | 6 conversations (L1-L6) | 5 / 6 pass on Groq `gpt-oss-120b`; L2 failed (model browsed with `search_recipes` instead of computing) → fixed by `router.py`, passes on Gemini ([`EVAL_LLM_gemini_L2.md`](docs/EVAL_LLM_gemini_L2.md)) |
+
+In every live case the one-shot LLM (same model, no tools) either guesses, asks for the data, or invents dataset facts;
+see the side-by-side answers in `docs/EVAL_LLM.md`.
 
 See [`docs/DESIGN.md`](docs/DESIGN.md) for the design decisions, data findings, what worked / failed, and the AI-tool disclosure.
