@@ -125,7 +125,34 @@ Install the dependencies:
 pip install -r requirements.txt
 ```
 
-### 3. Download and index the dataset (one-off)
+### 3. Download the dataset (one-off)
+
+The dataset host often refuses Python's scripted download (HTTP 403), so download the zip yourself first.
+From the **repository root** (the `AI-Intern-Task` folder):
+
+```bash
+curl -O https://eightportions.com/recipes_raw.zip
+```
+
+Or download <https://eightportions.com/recipes_raw.zip> in a browser and move it to the repository root.
+Then extract it into a `data/` folder there:
+
+```bash
+# macOS / Linux
+unzip recipes_raw.zip -d data
+```
+
+```powershell
+# Windows (PowerShell)
+Expand-Archive recipes_raw.zip -DestinationPath data
+```
+
+You should now have `data/recipes_raw_nosource_ar.json`, `data/recipes_raw_nosource_epi.json` and
+`data/recipes_raw_nosource_fn.json`.
+
+### 4. Build the index (one-off)
+
+From the `backend` folder, with the virtual environment active:
 
 ```bash
 python scripts/setup_data.py
@@ -133,9 +160,9 @@ python scripts/setup_data.py
 
 This runs three steps:
 
-1. `download_data.py`: downloads `recipes_raw.zip` from eightportions.com and unpacks the three JSON files into `data/`
+1. `download_data.py`: finds the three JSON files in `data/` (or tries to download them, and prints the manual steps if that is refused)
 2. `build_db.py`: parses and normalises every recipe into `backend/storage/recipes.db`
-3. `build_embeddings.py`: computes the MiniLM embeddings for hybrid search (**about 25-30 minutes on a CPU**)
+3. `build_embeddings.py`: downloads the small MiniLM model on first use and computes the MiniLM embeddings for hybrid search (**about 25-30 minutes on a CPU**)
 
 **Faster option (about 2 minutes):** skip the embeddings. Search then uses BM25 keyword ranking only, and everything
 else works the same. You can run `python scripts/build_embeddings.py` later to enable hybrid search.
@@ -144,7 +171,7 @@ else works the same. You can run `python scripts/build_embeddings.py` later to e
 python scripts/setup_data.py --skip-embeddings
 ```
 
-### 4. Add your API key
+### 5. Add your API key
 
 ```bash
 # Windows
@@ -168,7 +195,7 @@ LLM_PROVIDER=groq
 GROQ_API_KEY=your-key-here
 ```
 
-### 5. Start the backend
+### 6. Start the backend
 
 From the `backend` folder, with the virtual environment active:
 
@@ -179,7 +206,7 @@ uvicorn app.main:app --port 8000
 Check it at <http://127.0.0.1:8000/api/health>. It reports the model, whether a key is configured, whether embeddings
 are loaded and the dataset counts.
 
-### 6. Start the frontend (in a second terminal)
+### 7. Start the frontend (in a second terminal)
 
 ```bash
 cd frontend
@@ -233,7 +260,7 @@ tool output. Click **New chat** to start a fresh session.
   "title + canonical ingredients", using reciprocal-rank fusion (k = 60).
 - **Filters before ranking:** restrictions (exclude dairy, include garlic, at most N steps, …) are applied in SQL to the
   *whole* dataset first, so a restriction can never be lost by the retriever.
-- **Duplicates collapsed:** 1,534 exact duplicates are grouped in results (the other ids are listed); junk test records
+- **Duplicates collapsed:** 1,528 exact duplicates are grouped in results (the other ids are listed); junk test records
   are excluded.
 - **Statistics:** `dataset_stats` builds SQL from the same filter object used for search, so a count always agrees with
   the list behind it. Supported metrics: `count`, `percentage`, `top_ingredients`, `ingredient_count_stats`,
@@ -374,6 +401,7 @@ Generated files (`data/`, `backend/storage/`, `.env`) are git-ignored and rebuil
 | Chat returns *503 / missing key* | Create `backend/.env` from `.env.example`, set `LLM_PROVIDER` and the matching key, then restart Uvicorn |
 | Chat returns *502 / LLM call failed* or a quota message | The free-tier limit is used up. Wait, or switch provider in `.env` |
 | `/api/health` shows `embeddings_loaded: false` | Run `python scripts/build_embeddings.py` (search still works with BM25 only) |
+| `setup_data.py` fails with *HTTP Error 403* | Download and extract the zip manually (Quick start, step 3), then run it again |
 | Error `recipes.db not found` | The data hasn't been built yet: run `python scripts/setup_data.py` from the `backend` folder |
 | Frontend shows a network / CORS error | Make sure the backend is running on port 8000, and open the UI at `localhost:3000` or `127.0.0.1:3000` |
 | Evaluation tests are skipped | They need `backend/storage/recipes.db`; build the data first |
@@ -385,7 +413,7 @@ Generated files (`data/`, `backend/storage/`, `.env`) are git-ignored and rebuil
 - Step counts are sentence-based approximations, and instruction quality varies by source.
 - Quantity checks ignore serving size, which the dataset does not contain.
 - Indirect substitution evidence is correlational (similar recipes that lack an ingredient), not tested swaps.
-- Statistics count all usable records, including 1,534 exact duplicates, because the brief asks for dataset-level counts;
+- Statistics count all usable records, including 1,528 exact duplicates, because the brief asks for dataset-level counts;
   search and matching collapse them.
 - The LLM sometimes leaves out details the tools returned; the full output is always in the evidence panel.
 - Runs locally only, as the brief requires. See `docs/DESIGN.md` for how it could be deployed.

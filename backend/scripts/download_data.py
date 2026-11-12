@@ -1,5 +1,6 @@
 """Download and unpack the Recipe Box dataset (three JSON files) into ../data."""
 import sys
+import urllib.error
 import urllib.request
 import zipfile
 from pathlib import Path
@@ -16,7 +17,20 @@ def main() -> None:
         return
     zpath = DATA / "recipes_raw.zip"
     print("downloading", URL)
-    urllib.request.urlretrieve(URL, zpath)
+    try:
+        urllib.request.urlretrieve(URL, zpath)
+    except (urllib.error.URLError, OSError) as e:
+        zpath.unlink(missing_ok=True)
+        sys.exit(f"""
+Automatic download failed ({e}).
+The dataset host sometimes refuses scripted downloads. Download it manually, then re-run this command:
+
+  1. Download {URL}
+     (in a browser, or: curl -O {URL})
+  2. Extract the zip so these files are in {DATA}:
+     {", ".join(EXPECTED)}
+     (Windows: right-click > Extract All; macOS/Linux: unzip recipes_raw.zip -d <that folder>)
+""")
     with zipfile.ZipFile(zpath) as z:
         z.extractall(DATA)
     missing = [f for f in EXPECTED if not (DATA / f).exists()]

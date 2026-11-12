@@ -31,7 +31,7 @@ the wrong tools and exhausted the step budget on the matching task; `gpt-oss-120
 | Raw records (ar 39,802 · epi 25,323 · fn 60,039) | 125,164 |
 | Usable (title + ≥1 parsed ingredient + ≥1 step) | 122,912 |
 | Empty/partial shells | ~2,200 (missing fields; kept in the DB, never returned) |
-| Exact duplicates (same title + ingredient list) | 1,534 copies |
+| Exact duplicates (same title + ingredient list) | 1,528 copies |
 | Junk test records (`Tst`, `Tstcgdgd…`) | 8 (flagged unusable) |
 
 Stable id = `<source>:<original hash key>` (e.g. `ar:23to8Xz…`), because the hash keys are only unique within a file.
@@ -120,7 +120,7 @@ on a container host (Render/Fly/HF Spaces) with `NEXT_PUBLIC_API_URL` pointing a
 - Step counts are sentence-based approximations; instruction quality varies by source.
 - Quantity comparison ignores yield/serving size (not in the data).
 - Indirect substitution evidence is correlational (similar recipes that lack an ingredient), not tested swaps.
-- Reported statistics count duplicate records (1,534) because the brief asks for dataset-level counts; search/match collapse them.
+- Reported statistics count duplicate records (1,528) because the brief asks for dataset-level counts; search/match collapse them.
 - The live-LLM evaluation (`eval/run_llm_eval.py`) needs an API key and its results depend on the model's behaviour (replies
   are phrased differently run to run, and free-tier quotas can interrupt it); the deterministic suite (`eval/run_eval.py`)
   is the reproducible part.
