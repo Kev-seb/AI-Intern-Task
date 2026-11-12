@@ -146,12 +146,14 @@ SQL. Likewise *"How many calories does this recipe have?"* is answered from the 
 
 ## AI tools used (disclosure)
 
-I built this project with the assistance of AI coding tools, and every step was directed, reviewed and monitored by me.
+I built this project with the assistance of AI coding tools, and every step was monitored by me: I planned the workflow,
+prompted the AI for the code each part needed, and read through all of the generated code and the overall workflow myself
+before keeping it.
 
 - **Where AI helped:** scaffolding the FastAPI and Next.js boilerplate, drafting code for the components I specified
   (normaliser rules, SQL queries, tool definitions, UI), suggesting regex/tokenising patterns and SQL optimisations,
   writing test and evaluation scaffolding, and tidying documentation.
-- **What I did:** defined the architecture and the grounding contract (the LLM only parses intent, calls tools and phrases
+- **What I did:** wrote the prompts that produced the relevant code, read every file myself, defined the architecture and the grounding contract (the LLM only parses intent, calls tools and phrases
   answers; every number, ranking, id and substitution comes from code), chose the retrieval, normalisation, scoring and
   substitution-evidence approaches, decided the evaluation cases and pass criteria, and reviewed, ran and tested all
   generated code, correcting it where it was wrong (see "What worked, what failed" above).
