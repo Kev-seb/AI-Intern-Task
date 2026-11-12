@@ -317,7 +317,7 @@ From the `backend` folder:
 python -m pytest -q
 ```
 
-Runs **31 tests**: 8 normaliser tests, 12 router tests and the 11 deterministic evaluation cases (the evaluation cases
+Runs **34 tests**: 8 normaliser tests, 15 router tests and the 11 deterministic evaluation cases (the evaluation cases
 need the built database and are skipped without it).
 
 ```bash

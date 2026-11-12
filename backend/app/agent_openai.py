@@ -119,7 +119,15 @@ def chat_openai(session: Session, message: str, system_prompt: str) -> dict:
             choice = {"type": "function", "function": {"name": forced}}
         else:
             step_specs, choice = specs, "auto"
-        data = _post(key, {"model": MODEL, "messages": messages, "tools": step_specs, "tool_choice": choice, "temperature": 0.2})
+        try:
+            data = _post(key, {"model": MODEL, "messages": messages, "tools": step_specs, "tool_choice": choice,
+                               "temperature": 0.2})
+        except Exception as e:  # noqa: BLE001
+            # a forced step can be rejected when the model insists on another tool; fall back to free tool choice
+            if not (forced and step == 0 and "tool_use_failed" in str(e)):
+                raise
+            data = _post(key, {"model": MODEL, "messages": messages, "tools": specs, "tool_choice": "auto",
+                               "temperature": 0.2})
         msg = data["choices"][0]["message"]
         calls = msg.get("tool_calls") or []
         if not calls:

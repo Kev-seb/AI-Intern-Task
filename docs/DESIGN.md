@@ -110,6 +110,10 @@ on a container host (Render/Fly/HF Spaces) with `NEXT_PUBLIC_API_URL` pointing a
   answered by browsing `search_recipes` results instead of computing over the full filtered set, so the ids were wrong.
   Fixed with `app/router.py`, which forces `dataset_stats` on the first step for clearly statistical phrasing (and never
   for nutrition/time/price questions); covered by `tests/test_router.py`. The re-run passes (`docs/EVAL_LLM_gemini_L2.md`).
+- The router then over-matched: the Task 2 request "...prefer recipes that need the fewest additional ingredients" looked
+  statistical ("fewest ... ingredients") and was forced into `dataset_stats`; on Groq this produced a rejected tool call.
+  Matching and substitution phrasings ("I have", "additional/missing ingredients", "replace", "remove") are now excluded
+  from routing, and the OpenAI-compatible loop falls back to free tool choice if a forced step is rejected.
 - The evaluation originally passed while an unsupported swap ("Parmesan → ¼ cup salt") slipped through; the checks were
   tightened (adjunct handling, UNVERIFIED caveats) so that class of error now fails the suite.
 
@@ -134,7 +138,7 @@ on a container host (Render/Fly/HF Spaces) with `NEXT_PUBLIC_API_URL` pointing a
 - **Live suite** (`eval/run_llm_eval.py`, `docs/EVAL_LLM.md`): 6 scripted conversations covering an aggregate statistic (L1),
   a step ranking (L2), multi-turn dairy refinement (L3), a missing attribute (L4), matching with a follow-up exclusion (L5)
   and a weak-evidence substitution (L6). 5 / 6 passed on Groq; L2 failed and was fixed as described above.
-- **Unit tests** (`pytest`): 31 tests (8 normaliser, 12 router, 11 evaluation cases).
+- **Unit tests** (`pytest`): 34 tests (8 normaliser, 15 router, 11 evaluation cases).
 
 ## One-shot LLM vs this system
 

@@ -27,6 +27,10 @@ def test_statistical_questions_are_routed(msg):
     "I have eggs, onions, tomatoes, and rice. Suggest five recipes with at most six steps.",
     "Take a banana bread recipe and remove eggs.",
     "Exclude eggs too.",
+    "I have eggs, onions, tomatoes, and rice. Suggest five recipes using as many of these as possible, with no peanuts "
+    "and at most six instruction steps. Prefer recipes that need the fewest additional ingredients.",
+    "Which recipes need the fewest missing ingredients if I have chicken and rice?",
+    "Replace cream in this pasta recipe without dairy and keep the most ingredients the same.",
 ])
 def test_other_questions_are_left_to_the_model(msg):
     assert route_tool(msg) is None

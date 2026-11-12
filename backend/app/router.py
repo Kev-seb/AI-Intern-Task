@@ -19,12 +19,17 @@ STATS_PATTERNS = [
     r"\bwhich (?:\d+|one|two|three|four|five|six|seven|eight|nine|ten)\b.{0,60}(?<!at )\b(?:fewest|least|most|steps?)\b",
 ]
 NOT_STATS = re.compile(r"\b(?:calories?|nutrition|nutritional|protein grams?|cook(?:ing)? time|price|cost)\b", re.I)
+# ingredient-matching ("I have ... prefer the fewest additional ingredients") and substitution requests use
+# "fewest/most ... ingredients" in a non-statistical sense, so they are left to the model
+NOT_STATS_TASK = re.compile(
+    r"\b(?:i have|i've got|i got|i only have|using (?:as many|these|what i have|my)|"
+    r"(?:additional|missing|extra) ingredients?|substitut\w*|replace|remove|swap|adapt)\b", re.I)
 
 
 def route_tool(message: str) -> str | None:
     """Return the tool name to force on the first step, or None to let the model choose."""
     text = (message or "").lower()
-    if NOT_STATS.search(text):
+    if NOT_STATS.search(text) or NOT_STATS_TASK.search(text):
         return None
     if any(re.search(p, text) for p in STATS_PATTERNS):
         return "dataset_stats"
