@@ -15,6 +15,9 @@ Answers are grounded in retrieved records; counts, rankings and averages are com
 Prerequisites: Python 3.11+, Node 20+, a free [Gemini API key](https://aistudio.google.com/apikey).
 
 ```bash
+git clone https://github.com/Kev-seb/AI-Intern-Task.git
+cd AI-Intern-Task
+
 # 1. backend: install, download dataset, build the index (one-off)
 cd backend
 python -m venv .venv
@@ -83,7 +86,7 @@ docs/               DESIGN.md (decisions, limitations, AI disclosure) · EVAL_RE
 | Suite | Cases | Result |
 |---|---|---|
 | Deterministic ([`docs/EVAL_RESULTS.md`](docs/EVAL_RESULTS.md)) | 11 (multi-turn search, aggregate stats, step ranking, missing attributes, matching + follow-up, no-match, quantities, weak-evidence substitution, cream→dairy-free, refused substitution, normalisation) | 11 / 11 pass |
-| Live LLM vs one-shot ([`docs/EVAL_LLM.md`](docs/EVAL_LLM.md)) | 6 conversations (L1-L6) | 5 / 6 pass on Groq `gpt-oss-120b`; L2 failed (model browsed with `search_recipes` instead of computing) → fixed by `router.py`, passes on Gemini ([`EVAL_LLM_gemini_L2.md`](docs/EVAL_LLM_gemini_L2.md)) |
+| Live LLM vs one-shot ([`docs/EVAL_LLM.md`](docs/EVAL_LLM.md)) | 6 conversations (L1-L6) | 5 / 6 pass on Groq `gpt-oss-120b`; L2 failed (model browsed with `search_recipes` instead of computing) → fixed by `router.py`, passes on Gemini ([`docs/EVAL_LLM_gemini_L2.md`](docs/EVAL_LLM_gemini_L2.md)) |
 
 In every live case the one-shot LLM (same model, no tools) either guesses, asks for the data, or invents dataset facts;
 see the side-by-side answers in `docs/EVAL_LLM.md`.
