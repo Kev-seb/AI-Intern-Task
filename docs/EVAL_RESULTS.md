@@ -19,7 +19,7 @@ them against independent recomputation or invariants (no LLM involved).
 
 ## T1-A - Task 1 · multi-turn: penne pasta -> 'I cannot have dairy'
 
-Result: **PASS** (1.0s)
+Result: **PASS** (1.4s)
 
 - [x] turn 1 returns penne recipes
 - [x] turn 2 keeps the earlier query
@@ -36,7 +36,7 @@ turn2 -> ['Penne Pasta with Spinach and Bacon', 'Penne Pasta with Cannellini Bea
 
 ## T1-B - Task 1 · aggregate: garlic AND onion count + percentage
 
-Result: **PASS** (0.6s)
+Result: **PASS** (0.5s)
 
 - [x] count equals independent set intersection
 - [x] denominator is all usable recipes
@@ -101,7 +101,7 @@ turn1: ["Mamma Rita's Eggs and Tomato Sauce", 'Kagianas (Greek Eggs and Tomato)'
 
 ## T2-B - Task 2 · no-match with contradictory hard constraints
 
-Result: **PASS** (1.0s)
+Result: **PASS** (1.1s)
 
 - [x] main result is empty and flagged no_match
 - [x] the note says constraints were not relaxed
@@ -132,7 +132,7 @@ INSUFFICIENT on paper (have 1 cup, recipe needs more; ~1.5x what you have); INSU
 
 ## T3-A - Task 3 · banana bread without eggs (weak, indirect evidence)
 
-Result: **PASS** (1.2s)
+Result: **PASS** (1.0s)
 
 - [x] adaptation produced and verified
 - [x] evidence confidence is not overstated (weak/moderate/none)
@@ -150,7 +150,7 @@ confidence: weak: only 1-2 supporting recipes | candidates: [('silken tofu', 'we
 
 ## T3-B - Task 3 · replace cream in a pasta recipe without dairy
 
-Result: **PASS** (1.9s)
+Result: **PASS** (1.5s)
 
 - [x] target cream line found
 - [x] updated list contains no dairy-flagged ingredient
@@ -168,7 +168,7 @@ Drunken Penne Pasta -> ok; changes: [('1/2 cup cream', '0.5 cup coconut milk'), 
 
 ## T3-C - Task 3 · unsupported substitution is refused, not invented
 
-Result: **PASS** (1.0s)
+Result: **PASS** (0.9s)
 
 - [x] no fabricated 'good' confidence
 - [x] unsupported candidates are labelled external/unverified or absent

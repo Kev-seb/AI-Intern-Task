@@ -66,7 +66,8 @@ def with_retry(fn, attempts: int = 6):
             low = msg.lower()
             transient = any(t in low for t in ("429", "503", "500", "502", "overloaded", "unavailable", "resource_exhausted",
                                                "timeout", "timed out", "disconnected", "getaddrinfo", "connection",
-                                               "remoteprotocol", "readerror"))
+                                               "remoteprotocol", "readerror", "ssl", "eof occurred", "reset by peer",
+                                               "broken pipe", "temporary failure"))
             if not transient or i == attempts - 1:
                 raise
             wait = min((_retry_delay(msg) or 2 * (2 ** i)) + 1.5, 70)

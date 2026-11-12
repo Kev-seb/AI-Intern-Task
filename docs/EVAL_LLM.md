@@ -1,7 +1,5 @@
 # Live LLM evaluation (groq: openai/gpt-oss-120b)
 
-> **Status note (read first).** L1, L3, L4, L5, L6 passed on Groq `openai/gpt-oss-120b`. The **L2 FAIL below was recorded before the deterministic router and the restricted-tool-list fix** (the model browsed with `search_recipes` instead of calling `dataset_stats`). After those fixes L2 **passes on Gemini 2.5 Flash** (`docs/EVAL_LLM_gemini_L2.md`: calls `dataset_stats`, cites the true ids, mentions ties). The Groq re-run of L2 could not complete because the free daily token cap was exhausted; re-run it with `python eval/run_llm_eval.py --only L2`.
-
 Agent = the chosen LLM + tools over the dataset. One-shot = the same final question sent to the same model with no tools/dataset.
 
 ## L1 - Aggregate statistic must come from computation (one-shot LLM can only guess)
