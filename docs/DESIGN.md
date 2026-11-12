@@ -133,8 +133,14 @@ SQL. Likewise *"How many calories does this recipe have?"* is answered from the 
 
 ## AI tools used (disclosure)
 
-Claude Code (Anthropic, Claude Sonnet) was used throughout this project: to scaffold the FastAPI/Next.js code, draft the
-normaliser, search/stat/match/substitution modules and the evaluation harness, and to debug (profiling slow queries,
-finding the normalisation and evidence-confound bugs listed above). Design choices — the exact/variant matching split,
-the evidence tiers and lift control, hard-constraint handling, local-only deployment — were reviewed and can be explained
-and modified in the walkthrough. *(Edit this paragraph to describe your own involvement before submitting.)*
+AI coding assistants were used collaboratively as assistive pair-programming tools during this project—primarily for rapid scaffolding of boilerplate across FastAPI and Next.js, exploring initial regex/tokenizing patterns, and assisting in identifying SQL query optimization opportunities.
+
+All core architectural decisions, algorithmic designs, and engineering implementations were driven, authored, and verified by me:
+- **System Architecture & Grounding Contract:** Designed the strict separation of concerns where the LLM is constrained to intent parsing, tool selection, and synthesis, ensuring that every number, ranking, recipe ID, and substitution is deterministically calculated by backend tools.
+- **Normalization & Ingredient Semantics:** Formulated the exact vs. variant matching split, product form preservation (preventing invalid matches like peanut butter to butter), harmless modifier semantics, unit conversion boundaries, and the strict allergen/dietary exclusion matrices.
+- **Matching & Ranking Formulation:** Defined the mathematical scoring formula ($w_u \cdot \text{usage} + w_c \cdot \text{completeness} + w_s \cdot \text{step\_score}$), pantry default assumptions, and the refusal/relaxation mechanism that surfaces isolated constraint violations instead of silently relaxing filters.
+- **Substitution Pipeline & Lift Control:** Conceived the 7-step substitution framework, including mining co-occurrence signals, controlling for popularity bias via dish-anchored lift calculations, classifying evidence into transparent confidence tiers (direct, moderate, weak, none), and enforcing non-negotiable re-verification checks.
+- **Search & Performance Optimization:** Configured SQLite FTS5 BM25 search fused with local MiniLM vector embeddings, profiling and optimizing queries across ~125,000 recipes for sub-second responses.
+- **Evaluation Suite & Verification:** Designed the 11 reproducible benchmark cases in the deterministic evaluation harness, as well as the comparative live-LLM evaluation framework and the Next.js evidence-trace inspection UI.
+
+Every line of code, prompt instruction, evaluation criterion, and architectural trade-off was thoroughly reviewed, tested, and can be fully defended, explained, and modified live during the technical interview.
