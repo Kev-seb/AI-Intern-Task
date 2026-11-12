@@ -1,0 +1,27 @@
+# data + generated indexes (rebuilt by backend/scripts/setup_data.py)
+data/
+backend/storage/
+
+# secrets
+.env
+.env.*
+!.env.example
+
+# python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+backend/prof.out
+
+# node / next
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# os / editor
+.DS_Store
+Thumbs.db
+.claude/
